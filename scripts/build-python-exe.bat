@@ -10,8 +10,13 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Installing or updating PyInstaller...
-py -m pip install --upgrade pyinstaller
+echo Running unit tests...
+py -m unittest discover -s tests -v
+if errorlevel 1 goto :error
+
+echo.
+echo Installing the declared build dependency...
+py -m pip install -r requirements-dev.txt
 if errorlevel 1 goto :error
 
 echo.
@@ -21,14 +26,19 @@ py -m PyInstaller ^
   --clean ^
   --onefile ^
   --windowed ^
+  --paths src ^
   --name ProxyEnvSwitch ^
   --icon assets\proxyenv-switch.ico ^
   src\proxyenv_switch.pyw
 if errorlevel 1 goto :error
 
 echo.
+for /f "tokens=*" %%H in ('powershell -NoProfile -Command "(Get-FileHash -Algorithm SHA256 'dist\ProxyEnvSwitch.exe').Hash.ToLower()"') do set HASH=%%H
+> dist\ProxyEnvSwitch.sha256.txt echo %HASH%  ProxyEnvSwitch.exe
+
 echo Build completed successfully:
 echo %CD%\dist\ProxyEnvSwitch.exe
+echo %CD%\dist\ProxyEnvSwitch.sha256.txt
 pause
 exit /b 0
 
