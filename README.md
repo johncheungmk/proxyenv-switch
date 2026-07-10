@@ -116,28 +116,6 @@ dist\ProxyEnvSwitch_ARM64.exe
 powershell -ExecutionPolicy Bypass -File scripts\test.ps1
 ```
 
-## GitHub Actions and releases
-
-The Build badge was deliberately removed from the README because it shows a broken image until `.github/workflows/build.yml` is actually committed to the repository.
-
-When using the GitHub website rather than Git, create or upload these exact paths:
-
-```text
-.github/workflows/build.yml
-.github/workflows/release.yml
-```
-
-See [`docs/GITHUB_WEB_UPLOAD_FIX.md`](docs/GITHUB_WEB_UPLOAD_FIX.md) for step-by-step instructions.
-
-For an automated release, commit the complete repository and push a matching version tag:
-
-```powershell
-git tag v1.2.1
-git push origin v1.2.1
-```
-
-The release workflow validates the tag against `VERSION`, builds the executables, generates checksums, creates a portable ZIP, and publishes the assets.
-
 ## Security and privacy
 
 ProxyEnv Switch:
