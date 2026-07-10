@@ -1,12 +1,30 @@
 # ProxyEnv Switch
 
-[![Build](https://github.com/johncheungmk/proxyenv-switch/actions/workflows/build.yml/badge.svg)](https://github.com/johncheungmk/proxyenv-switch/actions/workflows/build.yml)
-[![Latest release](https://img.shields.io/github/v/release/johncheungmk/proxyenv-switch)](https://github.com/johncheungmk/proxyenv-switch/releases)
+![Version](https://img.shields.io/badge/version-1.2.1-blue)
+![Platform](https://img.shields.io/badge/platform-Windows%2011-0078D4)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A lightweight Windows 11 utility for adding, updating, or removing the current user's `HTTP_PROXY` and `HTTPS_PROXY` environment variables.
 
-<img src="assets/proxyenv-switch.png" alt="ProxyEnv Switch icon" width="96">
+<p align="left">
+  <img src="assets/proxyenv-switch.png" alt="ProxyEnv Switch icon" width="128">
+</p>
+
+## Download
+
+### Windows 11 on Intel or AMD (x64)
+
+**[Download ProxyEnvSwitch_x64.exe](https://github.com/johncheungmk/proxyenv-switch/raw/refs/heads/main/dist/ProxyEnvSwitch_x64.exe)**
+
+### Windows 11 on ARM64
+
+**[Download ProxyEnvSwitch_ARM64.exe](https://github.com/johncheungmk/proxyenv-switch/raw/refs/heads/main/dist/ProxyEnvSwitch_ARM64.exe)**
+
+You can also open the **[GitHub Releases page](https://github.com/johncheungmk/proxyenv-switch/releases/latest)** for release bundles and checksums.
+
+> The direct links above download the executables stored in the repository's `dist` folder. This makes the download available even before GitHub Actions or release assets are configured.
+
+The executables are not commercially code-signed. Microsoft Defender SmartScreen may show an “unrecognized app” warning. Verify [`dist/SHA256SUMS.txt`](dist/SHA256SUMS.txt) or build the application from source before running it.
 
 ## What it does
 
@@ -32,27 +50,13 @@ Administrator rights are not required. ProxyEnv Switch does not modify machine-w
 
 > Applications must support the `HTTP_PROXY` and `HTTPS_PROXY` environment-variable convention. Already-running applications normally keep the values inherited when they started, so reopen them after a change.
 
-## Download
+## Version 1.2.1 improvements
 
-Open the repository's **Releases** page and download:
-
-- `ProxyEnvSwitch_x64.exe` for most Intel and AMD Windows 11 computers
-- `ProxyEnvSwitch_ARM64.exe` for Windows 11 on ARM
-- `ProxyEnvSwitch.exe` for the Python/Tkinter build produced on a Windows GitHub runner
-- `ProxyEnv-Switch-Windows-vX.Y.Z.zip` for the complete portable release bundle
-
-The executables are not commercially code-signed. Microsoft Defender SmartScreen may therefore show an “unrecognized app” warning. Verify the published SHA-256 checksum or build the application from source before running it.
-
-## Version 1.2 improvements
-
-- Explicit Windows DPI-awareness handling in both implementations
-- Resizable interface with wrapped text and larger minimum dimensions
-- Complete display of the current persistent proxy values
-- Direct Windows Registry API access in the native implementation
-- Verified two-variable updates with rollback after a partial failure
-- Correct pointer-sized Win32 environment-change notification handling
-- Refresh button and `F5` refresh in the Python interface
-- Unit tests, build validation, release packaging, and checksums
+- Added prominent direct-download links to the README.
+- Replaced fragile Build and dynamic Release badges with stable static badges.
+- Added a GitHub web-upload guide for workflows and release assets.
+- Updated the included x64 and ARM64 executables to version 1.2.1.
+- Retained the version 1.2 registry, rollback, verification, DPI-awareness, and test improvements.
 
 ## Repository structure
 
@@ -60,6 +64,7 @@ The executables are not commercially code-signed. Microsoft Defender SmartScreen
 proxyenv-switch/
 ├── .github/                 Workflows, issue template, Dependabot
 ├── assets/                  Application icon
+├── dist/                    Ready-to-download Windows executables
 ├── docs/                    Repository and release guidance
 ├── native/                  Native Win32 implementation in Go
 ├── scripts/                 Build and test scripts
@@ -111,18 +116,27 @@ dist\ProxyEnvSwitch_ARM64.exe
 powershell -ExecutionPolicy Bypass -File scripts\test.ps1
 ```
 
-## Publish a GitHub release
+## GitHub Actions and releases
 
-After committing the complete repository, including the hidden `.github` directory:
+The Build badge was deliberately removed from the README because it shows a broken image until `.github/workflows/build.yml` is actually committed to the repository.
 
-```powershell
-git tag v1.2.0
-git push origin v1.2.0
+When using the GitHub website rather than Git, create or upload these exact paths:
+
+```text
+.github/workflows/build.yml
+.github/workflows/release.yml
 ```
 
-The release workflow validates the tag against `VERSION`, builds all executables, generates checksums, creates a portable ZIP, and publishes the assets.
+See [`docs/GITHUB_WEB_UPLOAD_FIX.md`](docs/GITHUB_WEB_UPLOAD_FIX.md) for step-by-step instructions.
 
-See [`docs/REPOSITORY_SETUP.md`](docs/REPOSITORY_SETUP.md) before updating the existing repository. This is important because a normal Windows drag-and-drop upload can omit hidden files such as `.github` and `.gitignore`.
+For an automated release, commit the complete repository and push a matching version tag:
+
+```powershell
+git tag v1.2.1
+git push origin v1.2.1
+```
+
+The release workflow validates the tag against `VERSION`, builds the executables, generates checksums, creates a portable ZIP, and publishes the assets.
 
 ## Security and privacy
 
