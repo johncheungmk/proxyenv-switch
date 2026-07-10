@@ -1,0 +1,2 @@
+edd360b6a603e8e016773fb5a8d9cb0941a61861153fea3accd0387b16a4c59d  dist/ProxyEnvSwitch_ARM64.exe
+cc9f6eda8ff5ea85ef99553438258cdb96f62e096d164abf467aac980bd0519d  dist/ProxyEnvSwitch_x64.exe
