@@ -12,8 +12,11 @@ $oldGoos = $env:GOOS
 $oldGoarch = $env:GOARCH
 try {
     Write-Host "Formatting Go source..."
-    gofmt -w native/*.go
-    if ($LASTEXITCODE -ne 0) { throw "gofmt failed." }
+    $goFiles = Get-ChildItem -Path "native" -Filter "*.go" -File
+    foreach ($goFile in $goFiles) {
+        & gofmt -w $goFile.FullName
+        if ($LASTEXITCODE -ne 0) { throw "gofmt failed for $($goFile.FullName)." }
+    }
 
     Write-Host "Building Windows x64 executable..."
     $env:GOOS = "windows"
