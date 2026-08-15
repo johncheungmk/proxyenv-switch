@@ -2,6 +2,18 @@
 
 All notable changes to this project are documented here.
 
+## [1.2.2] - 2026-08-15
+
+### Changed
+
+- Environment-change notifications now run asynchronously so the native GUI remains responsive while Windows processes `WM_SETTINGCHANGE` broadcasts.
+- Reduced the `SendMessageTimeoutW` per-window timeout from 5 seconds to 1 second and added `SMTO_ERRORONEXIT`.
+- Synchronized the native application version and repository `VERSION` metadata at 1.2.2.
+
+### Fixed
+
+- The native Windows application could appear to hang or become unresponsive when adding or removing proxy variables during the first several minutes after Windows startup, when other top-level applications were still initializing or not responding promptly to broadcast messages.
+
 ## [1.2.1] - 2026-07-10
 
 ### Added

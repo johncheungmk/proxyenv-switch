@@ -1,8 +1,8 @@
 # ProxyEnv Switch
 
-![Version](https://img.shields.io/badge/version-1.2.1-blue)
+![Version](https://img.shields.io/badge/version-1.2.2-blue)
 ![Platform](https://img.shields.io/badge/platform-Windows%2011-0078D4)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![License: MIT](LICENSE)](LICENSE)
 
 A lightweight Windows 11 utility for adding, updating, or removing the current user's `HTTP_PROXY` and `HTTPS_PROXY` environment variables.
 
@@ -20,11 +20,11 @@ A lightweight Windows 11 utility for adding, updating, or removing the current u
 
 **[Download ProxyEnvSwitch_ARM64.exe](https://github.com/johncheungmk/proxyenv-switch/raw/refs/heads/main/dist/ProxyEnvSwitch_ARM64.exe)**
 
-You can also open the **[GitHub Releases page](https://github.com/johncheungmk/proxyenv-switch/releases/latest)** for release bundles and checksums.
+You can also open the **GitHub Releases page** for release bundles and checksums.
 
-> The direct links above download the executables stored in the repository's `dist` folder. This makes the download available even before GitHub Actions or release assets are configured.
+> The executables in `dist/` are release artifacts. Build them from the updated source before publishing version 1.2.2.
 
-The executables are not commercially code-signed. Microsoft Defender SmartScreen may show an “unrecognized app” warning. Verify [`dist/SHA256SUMS.txt`](dist/SHA256SUMS.txt) or build the application from source before running it.
+The executables are not commercially code-signed. Microsoft Defender SmartScreen may show an “unrecognized app” warning. Verify `dist/SHA256SUMS.txt` or build the application from source before running it.
 
 ## What it does
 
@@ -50,19 +50,17 @@ Administrator rights are not required. ProxyEnv Switch does not modify machine-w
 
 > Applications must support the `HTTP_PROXY` and `HTTPS_PROXY` environment-variable convention. Already-running applications normally keep the values inherited when they started, so reopen them after a change.
 
-## Version 1.2.1 improvements
+## Version 1.2.2 improvements
 
-- Added prominent direct-download links to the README.
-- Replaced fragile Build and dynamic Release badges with stable static badges.
-- Added a GitHub web-upload guide for workflows and release assets.
-- Updated the included x64 and ARM64 executables to version 1.2.1.
-- Retained the version 1.2 registry, rollback, verification, DPI-awareness, and test improvements.
+- Prevents the UI from appearing to hang when Windows is still busy shortly after startup.
+- Moves the `WM_SETTINGCHANGE` environment broadcast off the native GUI thread.
+- Reduces the per-window notification timeout from 5 seconds to 1 second and adds `SMTO_ERRORONEXIT`.
+- Keeps registry rollback, verification, DPI-awareness, and current-value display behavior unchanged.
 
 ## Repository structure
 
 ```text
 proxyenv-switch/
-├── .github/                 Workflows, issue template, Dependabot
 ├── assets/                  Application icon
 ├── dist/                    Ready-to-download Windows executables
 ├── docs/                    Repository and release guidance
@@ -87,12 +85,6 @@ Requirements: Windows 11 and Python 3.10 or later.
 
 ```bat
 scripts\build-python-exe.bat
-```
-
-Output:
-
-```text
-dist\ProxyEnvSwitch.exe
 ```
 
 ### Native x64 and ARM64 applications
@@ -126,8 +118,8 @@ ProxyEnv Switch:
 - Does not transmit or collect data
 - Does not install a service or run in the background
 
-Review [`SECURITY.md`](SECURITY.md) for vulnerability reporting.
+Review `SECURITY.md` for vulnerability reporting.
 
 ## License
 
-MIT License. See [`LICENSE`](LICENSE).
+MIT License. See `LICENSE`.
