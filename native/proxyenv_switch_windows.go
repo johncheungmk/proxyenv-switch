@@ -14,7 +14,7 @@ import (
 
 const (
 	appTitle   = "ProxyEnv Switch"
-	appVersion = "1.2.0"
+	appVersion = "1.2.2"
 
 	CS_HREDRAW = 0x0002
 	CS_VREDRAW = 0x0001
@@ -58,6 +58,9 @@ const (
 
 	HWND_BROADCAST   = 0xffff
 	SMTO_ABORTIFHUNG = 0x0002
+	SMTO_ERRORONEXIT = 0x0020
+
+	environmentBroadcastTimeoutMS = 1000
 
 	SWP_NOZORDER   = 0x0004
 	SWP_NOACTIVATE = 0x0010
@@ -523,12 +526,9 @@ func addProxy(hwnd syscall.Handle) {
 
 	_ = os.Setenv("HTTP_PROXY", proxyURL)
 	_ = os.Setenv("HTTPS_PROXY", proxyURL)
-	notified := broadcastEnvironmentChange()
+	notifyEnvironmentChangeAsync()
 	refreshCurrentValues()
-	status := "Proxy variables were added successfully. Reopen applications or terminals that were already running so they inherit the new values."
-	if !notified {
-		status += " Windows could not notify every open application, but the saved values are valid."
-	}
+	status := "Proxy variables were added successfully. Windows is being notified in the background. Reopen applications or terminals that were already running so they inherit the new values."
 	setText(hwndStatus, status)
 	messageBox(hwnd, "HTTP_PROXY and HTTPS_PROXY were set to:\n\n"+proxyURL, MB_OK|MB_ICONINFO)
 }
@@ -542,7 +542,7 @@ func removeProxy(hwnd syscall.Handle) {
 	}
 	_ = os.Unsetenv("HTTP_PROXY")
 	_ = os.Unsetenv("HTTPS_PROXY")
-	notified := broadcastEnvironmentChange()
+	notifyEnvironmentChangeAsync()
 	refreshCurrentValues()
 
 	if !existed {
@@ -550,12 +550,15 @@ func removeProxy(hwnd syscall.Handle) {
 		messageBox(hwnd, "The proxy variables were already absent.", MB_OK|MB_ICONINFO)
 		return
 	}
-	status := "Proxy variables were removed successfully. Reopen applications or terminals that were already running to clear inherited values."
-	if !notified {
-		status += " Windows could not notify every open application, but the values were removed."
-	}
+	status := "Proxy variables were removed successfully. Windows is being notified in the background. Reopen applications or terminals that were already running to clear inherited values."
 	setText(hwndStatus, status)
 	messageBox(hwnd, "HTTP_PROXY and HTTPS_PROXY were removed from the current user's environment.", MB_OK|MB_ICONINFO)
+}
+
+func notifyEnvironmentChangeAsync() {
+	go func() {
+		_ = broadcastEnvironmentChange()
+	}()
 }
 
 func broadcastEnvironmentChange() bool {
@@ -565,8 +568,8 @@ func broadcastEnvironmentChange() bool {
 		WM_SETTINGCHANGE,
 		0,
 		uintptr(unsafe.Pointer(utf16Ptr("Environment"))),
-		SMTO_ABORTIFHUNG,
-		5000,
+		SMTO_ABORTIFHUNG|SMTO_ERRORONEXIT,
+		environmentBroadcastTimeoutMS,
 		uintptr(unsafe.Pointer(&result)),
 	)
 	return ret != 0
