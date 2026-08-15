@@ -11,10 +11,11 @@ New-Item -ItemType Directory -Force -Path "dist" | Out-Null
 $oldGoos = $env:GOOS
 $oldGoarch = $env:GOARCH
 try {
-    Write-Host "Checking Go formatting..."
-    $unformatted = gofmt -l native/proxyenv_switch_windows.go
-    if ($unformatted) {
-        throw "Run gofmt on: $unformatted"
+    Write-Host "Formatting Go source..."
+    $goFiles = Get-ChildItem -Path "native" -Filter "*.go" -File
+    foreach ($goFile in $goFiles) {
+        & gofmt -w $goFile.FullName
+        if ($LASTEXITCODE -ne 0) { throw "gofmt failed for $($goFile.FullName)." }
     }
 
     Write-Host "Building Windows x64 executable..."
