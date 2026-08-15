@@ -9,7 +9,7 @@ on:
       - agent/**
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   build:
@@ -39,15 +39,3 @@ jobs:
             dist/ProxyEnvSwitch_x64.exe
             dist/ProxyEnvSwitch_ARM64.exe
             dist/SHA256SUMS.txt
-
-      - name: Commit refreshed dist binaries on publish branch
-        if: github.event_name == 'push' && github.ref == 'refs/heads/agent/update-dist-v1.2.2'
-        shell: pwsh
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add dist/ProxyEnvSwitch_x64.exe dist/ProxyEnvSwitch_ARM64.exe dist/SHA256SUMS.txt
-          if (-not (git diff --cached --quiet)) {
-            git commit -m "Refresh v1.2.2 Windows binaries"
-            git push origin HEAD:agent/update-dist-v1.2.2
-          }
