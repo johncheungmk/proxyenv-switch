@@ -11,11 +11,9 @@ New-Item -ItemType Directory -Force -Path "dist" | Out-Null
 $oldGoos = $env:GOOS
 $oldGoarch = $env:GOARCH
 try {
-    Write-Host "Checking Go formatting..."
-    $unformatted = gofmt -l native/proxyenv_switch_windows.go
-    if ($unformatted) {
-        throw "Run gofmt on: $unformatted"
-    }
+    Write-Host "Formatting Go source..."
+    gofmt -w native/*.go
+    if ($LASTEXITCODE -ne 0) { throw "gofmt failed." }
 
     Write-Host "Building Windows x64 executable..."
     $env:GOOS = "windows"
